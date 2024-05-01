@@ -3,6 +3,9 @@ package main
 import (
 	"gin-freemarket-app/controllers"
 	"gin-freemarket-app/infra"
+	"gin-freemarket-app/middlewares"
+	"github.com/gin-contrib/cors"
+
 	//"gin-freemarket-app/models"
 	"gin-freemarket-app/repositories"
 	"gin-freemarket-app/services"
@@ -28,14 +31,17 @@ func main() {
 	authController := controllers.NewAuthController(authService)
 
 	r := gin.Default()
+	/// Reactなど異なるサーバーからのアクセス制限を設定できるミドルウェア
+	r.Use(cors.Default())
 	itemRouter := r.Group("/items")
+	itemRouterWithAuth := r.Group("/items", middlewares.AuthMiddleware(authService))
 	authRouter := r.Group("/auth")
 
 	itemRouter.GET("", itemController.FindAll)
-	itemRouter.GET("/:id", itemController.FindById)
-	itemRouter.POST("", itemController.Create)
-	itemRouter.PUT("/:id", itemController.Update)
-	itemRouter.DELETE("/:id", itemController.Delete)
+	itemRouterWithAuth.GET("/:id", itemController.FindById)
+	itemRouterWithAuth.POST("", itemController.Create)
+	itemRouterWithAuth.PUT("/:id", itemController.Update)
+	itemRouterWithAuth.DELETE("/:id", itemController.Delete)
 
 	authRouter.POST("/signup", authController.Signup)
 	authRouter.POST("/login", authController.Login)
