@@ -4,10 +4,11 @@ import (
 	"fmt"
 	"gin-freemarket-app/models"
 	"gin-freemarket-app/repositories"
-	"github.com/golang-jwt/jwt/v5"
-	"golang.org/x/crypto/bcrypt"
 	"os"
 	"time"
+
+	"github.com/golang-jwt/jwt/v5"
+	"golang.org/x/crypto/bcrypt"
 )
 
 type IAuthService interface {
@@ -52,8 +53,6 @@ func (s *AuthService) Login(email string, password string) (*string, error) {
 	if err != nil {
 		return nil, err
 	}
-	return token, nil
-
 	return token, nil
 }
 
